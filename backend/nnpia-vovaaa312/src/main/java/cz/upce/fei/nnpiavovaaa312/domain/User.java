@@ -1,16 +1,23 @@
 package cz.upce.fei.nnpiavovaaa312.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.*;
 
-@AllArgsConstructor
+
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
-    private final Long Id;
-    private final String password;
-    private final String email;
+    @Id
+    private Long Id;
+    private String password;
+    private String email;
+
+
 }
