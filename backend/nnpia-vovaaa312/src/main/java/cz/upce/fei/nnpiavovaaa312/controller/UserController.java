@@ -5,10 +5,8 @@ import cz.upce.fei.nnpiavovaaa312.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
 
@@ -16,15 +14,6 @@ public class UserController {
         this.userService = userService;
     }
 
-//    @GetMapping("/user")
-//    public String findUser() {
-//        return userService.findById();
-//    }
-//
-//    @GetMapping("/users/find/{id}")
-//    public String findUserById(@PathVariable Long id) {
-//        return userService.findById(id).toString();
-//    }
 
 
     @GetMapping("/findById")
@@ -33,21 +22,29 @@ public class UserController {
     }
 
     @GetMapping("/findByEmail")
-    public ResponseEntity<?> findByEmail(@RequestParam String findByEmail) {
-        return ResponseEntity.ok(userService.findByEmail(findByEmail));
+    public ResponseEntity<?> findByEmail(@RequestParam String email) {
+        User finded = userService.findByEmail(email);
+        return ResponseEntity.ok(finded);
     }
     @PostMapping("/save")
     public ResponseEntity<?> addUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.save(user));
     }
 
-
-
-    @GetMapping("/users")
-    public Collection<User> findAll() {
-        return userService.getAllUsers();
+    @GetMapping("/findAll")
+    public ResponseEntity<?>findAll() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @DeleteMapping("/deleteById/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.deleteUserById(id));
+    }
+
+    @PutMapping("/updateUser")
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
+        return ResponseEntity.ok(userService.updateUser(user));
+    }
 
 }
 
