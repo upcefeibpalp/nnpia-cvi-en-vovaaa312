@@ -1,8 +1,8 @@
 package cz.upce.fei.nnpiavovaaa312.controller;
 
-import cz.upce.fei.nnpiavovaaa312.domain.auth.AuthRequest;
-import cz.upce.fei.nnpiavovaaa312.domain.auth.AuthResponse;
-import cz.upce.fei.nnpiavovaaa312.domain.auth.RegisterRequest;
+import cz.upce.fei.nnpiavovaaa312.domain.request.AuthRequest;
+import cz.upce.fei.nnpiavovaaa312.domain.request.RegisterRequest;
+import cz.upce.fei.nnpiavovaaa312.domain.response.AuthResponse;
 import cz.upce.fei.nnpiavovaaa312.repository.UserRepository;
 import cz.upce.fei.nnpiavovaaa312.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +21,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequest request)  {
-        if (userRepository.findUserByUsername(request.getUsername()) !=null) {
+        if (userRepository.findByUsername(request.getUsername()) !=null) {
             String errorMessage = "User with username: {" + request.getUsername() + "} already exists";
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
         }
-        if(userRepository.findUserByEmail(request.getEmail())!=null){
+        if(userRepository.findByEmail(request.getEmail()) != null) {
             String errorMessage = "User with email: {" + request.getEmail() + "} already exists";
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
 

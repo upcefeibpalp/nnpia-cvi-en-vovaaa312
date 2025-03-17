@@ -1,17 +1,16 @@
 package cz.upce.fei.nnpiavovaaa312.service;
 
 import cz.upce.fei.nnpiavovaaa312.domain.SystemRole;
-import cz.upce.fei.nnpiavovaaa312.domain.auth.AuthRequest;
-import cz.upce.fei.nnpiavovaaa312.domain.auth.AuthResponse;
-import cz.upce.fei.nnpiavovaaa312.domain.auth.RegisterRequest;
+import cz.upce.fei.nnpiavovaaa312.domain.User;
+import cz.upce.fei.nnpiavovaaa312.domain.request.AuthRequest;
+import cz.upce.fei.nnpiavovaaa312.domain.request.RegisterRequest;
+import cz.upce.fei.nnpiavovaaa312.domain.response.AuthResponse;
 import cz.upce.fei.nnpiavovaaa312.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import cz.upce.fei.nnpiavovaaa312.domain.User;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +41,8 @@ public class AuthService {
                         request.getPassword()
                 )
         );
-        User user = userRepository.findUserByUsername(request.getUsername());
+        var user = userRepository.findByUsername(request.getUsername());
+        if(user == null) throw new NullPointerException("User not found");
 
         var jwtToken = jwtService.generateToken(user);
 

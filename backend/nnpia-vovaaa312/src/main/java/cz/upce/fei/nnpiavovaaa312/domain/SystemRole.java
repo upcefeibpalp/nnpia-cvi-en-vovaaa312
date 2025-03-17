@@ -1,14 +1,13 @@
 package cz.upce.fei.nnpiavovaaa312.domain;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cz.upce.fei.nnpiavovaaa312.domain.SystemPermission.*;
+
 
 @RequiredArgsConstructor
 public enum SystemRole {
@@ -16,7 +15,7 @@ public enum SystemRole {
 
     //system level roles
     SYSTEM_USER(getUserPermissions()),
-    SYSTEM_ADMIN(getAllPermissions());
+    SYSTEM_ADMIN(getAdminPermissions());
 
     @Getter
     private final Set<SystemPermission> permissions;

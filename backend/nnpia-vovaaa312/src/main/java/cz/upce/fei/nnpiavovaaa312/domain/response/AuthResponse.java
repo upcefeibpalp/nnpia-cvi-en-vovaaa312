@@ -1,4 +1,4 @@
-package cz.upce.fei.nnpiavovaaa312.domain.auth;
+package cz.upce.fei.nnpiavovaaa312.domain.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
