@@ -29,7 +29,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.findById(id));
+        // Místo toho, abychom vraceli entitu, vracíme DTO.
+        return ResponseEntity.ok(userService.findById(id).toDto());
     }
 
     @GetMapping("/findByEmail")

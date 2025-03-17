@@ -1,5 +1,6 @@
 package cz.upce.fei.nnpiavovaaa312.domain;
 
+import cz.upce.fei.nnpiavovaaa312.dto.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
@@ -63,5 +64,14 @@ public class User implements UserDetails {
         return role.equals(SystemRole.SYSTEM_ADMIN);
     }
 
-
+    // Pomocná metoda pro převod entity na DTO.
+    public UserResponseDto toDto() {
+        return UserResponseDto.builder()
+                .id(Id)
+                .username(username)
+                .email(email)
+                .role((role != null) ? role.name() : null)
+                .active(active)
+                .build();
+    }
 }
