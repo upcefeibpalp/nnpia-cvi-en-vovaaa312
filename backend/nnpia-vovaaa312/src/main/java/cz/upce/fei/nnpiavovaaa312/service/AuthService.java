@@ -41,8 +41,8 @@ public class AuthService {
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByUsername(request.getUsername());
-        if(user == null) throw new NullPointerException("User not found");
+        User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+       // if(user == null) throw new NullPointerException("User not found");
 
         var jwtToken = jwtService.generateToken(user);
 

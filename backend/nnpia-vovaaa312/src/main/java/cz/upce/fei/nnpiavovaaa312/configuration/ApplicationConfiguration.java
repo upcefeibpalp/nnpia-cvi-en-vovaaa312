@@ -23,7 +23,8 @@ public class ApplicationConfiguration {
     @Bean
     public UserDetailsService userDetailsService() {
         return (UserDetailsService) username
-                -> (UserDetails)repository.findByUsername(username);
+                -> (UserDetails)repository.findByUsername(username)
+                .orElseThrow();
     }
     @Bean
     public AuthenticationProvider authenticationProvider() {

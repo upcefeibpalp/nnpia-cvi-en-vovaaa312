@@ -1,6 +1,5 @@
 package cz.upce.fei.nnpiavovaaa312.domain;
 
-import cz.upce.fei.nnpiavovaaa312.dto.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.boot.autoconfigure.web.WebProperties;
@@ -9,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+import cz.upce.fei.nnpiavovaaa312.dto.UserResponseDto;
 
 @Entity
 @Table(name = "users")

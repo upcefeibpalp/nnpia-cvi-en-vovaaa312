@@ -1,6 +1,8 @@
 package cz.upce.fei.nnpiavovaaa312.service;
 
 import cz.upce.fei.nnpiavovaaa312.domain.User;
+import cz.upce.fei.nnpiavovaaa312.domain.exception.UserAlreadyExistsException;
+import cz.upce.fei.nnpiavovaaa312.domain.exception.UserNotFoundException;
 import cz.upce.fei.nnpiavovaaa312.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -38,14 +40,33 @@ public class UserService {
     }
 
     public User findById(Long id) {
-        return userRepository.findById(id);
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
     }
 
     public User save(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new UserAlreadyExistsException("User with email " + user.getEmail() + " already exists");
+        }
+
+
         return userRepository.save(user);
+    }
+
+    public User deleteUser(Long id) {
+        User deleted = findById(id);
+        userRepository.delete(deleted);
+        return deleted;
+
+    }
+
+    public User updateUser(User user) {
+        User existingUser = findById(user.getId());
+        existingUser.setEmail(user.getEmail());
+        existingUser.setUsername(user.getUsername());
+        return userRepository.saveAndFlush(existingUser);
     }
 }

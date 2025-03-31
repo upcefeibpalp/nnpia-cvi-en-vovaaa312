@@ -1,7 +1,10 @@
 package cz.upce.fei.nnpiavovaaa312.controller;
 
 import cz.upce.fei.nnpiavovaaa312.configuration.TestSecurityConfig;
+import cz.upce.fei.nnpiavovaaa312.domain.SystemRole;
 import cz.upce.fei.nnpiavovaaa312.domain.User;
+import cz.upce.fei.nnpiavovaaa312.domain.exception.UserAlreadyExistsException;
+import cz.upce.fei.nnpiavovaaa312.domain.exception.UserNotFoundException;
 import cz.upce.fei.nnpiavovaaa312.service.JwtService;
 import cz.upce.fei.nnpiavovaaa312.service.UserService;
 import org.junit.jupiter.api.Test;
@@ -9,10 +12,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,5 +53,54 @@ public class UserControllerTest {
         mockMvc.perform(get("/api/users/" + 1))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"id\":1,\"username\":\"John Doe\"}"));
+    }
+
+
+    @Test
+    public void testFindByIdNotFound() throws Exception {
+        Long userId = 1L;
+
+        Mockito.when(
+                userService.findById(userId))
+                .thenThrow(new UserNotFoundException("User with id " + userId + " not found")
+                );
+
+        mockMvc.perform(get("/api/users/" + userId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testCreateUser() throws Exception {
+        User newUser = new User();
+        newUser.setId(1L);
+        newUser.setPassword("password");
+        newUser.setUsername("John Doe");
+        newUser.setEmail("john.doe@example.com");
+        newUser.setRole(SystemRole.SYSTEM_USER);
+
+        Mockito.when(userService.save(Mockito.any(User.class))).thenReturn(newUser);
+
+        mockMvc.perform(post("/api/users/save")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"John Doe\",\"email\":\"john.doe@example.com\"}"))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void testCreateUserConflict() throws Exception {
+        User newUser = new User();
+        newUser.setId(1L);
+        newUser.setPassword("password");
+        newUser.setUsername("John Doe");
+        newUser.setEmail("john.doe@example.com");
+        newUser.setRole(SystemRole.SYSTEM_USER);
+
+        Mockito.when(userService.save(Mockito.any(User.class)))
+                .thenThrow(new UserAlreadyExistsException("User with email john.doe@example.com already exists"));
+
+        mockMvc.perform(post("/api/users/save")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"username\":\"John Doe\",\"email\":\"john.doe@example.com\"}"))
+                .andExpect(status().isConflict());
     }
 }
